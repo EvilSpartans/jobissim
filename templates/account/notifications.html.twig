@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Notifications{% endblock %}
+
+{% block body %}
+<style>
+    .breadcrumbs {
+        background-image: url('./uploads/couvertures/{{ app.user.cover }}') !important;
+        border-radius: 15px;
+        text-align: center;
+        overflow: hidden;
+        padding: 90px 0;
+        margin-top: 30px;
+        background-size: cover !important;
+        background-position: center !important;
+        background-repeat: no-repeat !important;
+    }
+</style>
+<section class="breadcrumbs">
+    <div class="container">
+        <h1>{{ app.user.username }}</h1>
+        <ul class="trail-items" itemscope="" itemtype="http://schema.org/BreadcrumbList">
+            <li class="trail-item trail-begin"><a href="{{ path('account', {'id': app.user.id}) }}"><span
+                        itemprop="name">Mon compte</span></a>
+                <meta itemprop="position" content="1">
+            </li>
+            <li class="trail-item trail-end"><span itemprop="item"><span itemprop="name">Notification</span></span>
+                <meta itemprop="position" content="3">
+            </li>
+        </ul>
+    </div>
+</section>
+
+<div class="widget widget_categories mt-5">
+    {% if notifications|length %}
+    <h4 class="widget-title">
+        Vous avez {{ notifications | length}}
+        {% if notifications|length > 1 %}
+        notifications
+        {% else %}
+        notification
+        {% endif %}
+        &nbsp;
+        <a href="{{ path('notification_read_all') }}">
+            <button>Vider la liste</button>
+        </a>
+    </h4>
+    <ul>
+        {% for notification in notifications %}
+        <li>{{ notification.content }} &nbsp;
+            <!-- <a href="{{ path('notification_read', {'id': notification.id }) }}"><button>Supprimer</button></a> -->
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <h4 class="widget-title">
+        Aucune notification
+    </h4>
+    {% endif %}
+</div>
+{% endblock %}

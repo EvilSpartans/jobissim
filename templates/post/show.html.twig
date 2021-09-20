@@ -1,0 +1,116 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Vidéo{% endblock %}
+
+{% block body %}
+<section class="bg-gray pt-4 pr-15 pl-15">
+    <div class="container-fluid">
+        <div class="row">
+
+            <div class="col-xl-8 col-md-7">
+                <video class="viewtube-player-single" preload="none" playsinline controls
+                    data-poster="{{ vich_uploader_asset(post, 'imageFile')  }}">
+                    <source src="{{ vich_uploader_asset(post, 'videoFile')  }}" type="video/mp4" />
+                </video>
+                <ul class="video-meta">
+                    <li>
+                        <a href="{{ path('account', {'id': post.user.id}) }}">
+                            {% if post.user.avatar != '' %}
+                            <img src="{{ vich_uploader_asset(post.user, 'avatarFile')  }}" alt="{{post.user.username}}">
+                            {% else %}
+                            <img src="{{ asset('assets/images/nopic.png')  }}" alt="{{post.user.username}}">
+                            {% endif %}
+                            <span class="pl-10"> {{ post.user.username }}</span></a>
+                    </li>
+                    <li>
+                        <i class="fas fa-eye"></i>1260 Vues
+                    </li>
+                    <li>
+                        <i class="fas fa-tags"></i> <a href="archive.html">{{ post.category }}</a>
+                    </li>
+                    <li>
+                        <i class="fas fa-calendar-alt"></i>
+                        {{ post.createdAt | date('d/m/y') }}
+                    </li>
+                </ul>
+                <div class="container-fluid">
+                    <div class="row mt-15 mb-15">
+                        <div class="col-sm-6 my-auto">
+                            <div class="video-like">
+                                <a href="{{ path('post_like', {'id': post.id}) }}" title="Like"
+                                    class="mr-4 like-button js-like" data-id="57">
+                                    {% if app.user and post.isLikedByUser(app.user) %}
+                                    <i class="fas fa-thumbs-up blueIcon"></i>
+                                    {% else %}
+                                    <i class="fas fa-thumbs-up"></i>
+                                    {% endif %}
+                                    <span class="js-likes">{{ post.likes | length }}</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 my-auto">
+                            <div class="video-shere">
+                                <h5 class="mb-0">Partager</h5>
+                                <div class="social-share">
+                                    <ul class="list-inline-item mb-0">
+                                        <li class="list-inline-item"><a id="fb-share-button" href="#"><i
+                                                    class="fab fa-facebook-f"></i></a>
+                                        </li>
+                                        <li class="list-inline-item"><a href="#"><i class="fab fa-twitter"></i></a></li>
+                                        <li class="list-inline-item"><a href="#"><i class="fab fa-pinterest"> </i></a>
+                                        </li>
+                                        <li class="list-inline-item"><a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="entry-content">
+                    <h1 class="video-entry-title">{{ post.title }}</h1>
+                    <p>{{ post.description }}</p>
+                </div>
+
+                <div class="pb-100">
+                    <div id="comments" class="comments-area">
+                        <h4 class="comments-title">
+                            {% if post.comments | length > 1%}
+                            {{ post.comments | length}} commentaires
+                            {% else %}
+                            {{ post.comments | length}} commentaire
+                            {% endif %}
+                        </h4>
+                        <ul class="comment-list">
+                            {{ include('comments/index.html.twig') }}
+                        </ul>
+                        <div id="respond" class="comment-respond">
+                            {% if app.user %}
+                            <h3 id="reply-title" class="comment-reply-title">Laisser un commentaire</h3>
+                            {{ include('comments/new.html.twig') }}
+                            {% else %}
+                            <h3 id="reply-title" class="comment-reply-title"> Vous devez être connecté pour laisser un
+                                commentaire</h3>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-4 col-md-5">
+                <div id="viewtube_related_videos-2" class="widget widget-video widget_viewtube_related_videos">
+                    <h4 class="widget-title">Vidéos similaires</h4>
+                    <ul class="sidebar-related-video">
+                        {{ include('post/similar.html.twig') }}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block javascript %}
+<script src="{{ asset('assets/js/sharefb.js') }}"></script>
+{% endblock %}

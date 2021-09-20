@@ -1,0 +1,89 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvelle vidéo{% endblock %}
+
+{% block body %}
+
+<style>
+    .custom-file-label {
+        opacity: 0;
+    }
+
+    .custom-file-input {
+        opacity: 1;
+    }
+
+    #post_category,
+    #post_subcategory {
+        font-family: Open Sans;
+        width: 100%;
+        border: 1px solid #dfdfdf;
+        height: 50px;
+        padding: 0 15px;
+        border-radius: 50px;
+        -webkit-transition: .3s linear;
+        -o-transition: .3s linear;
+        transition: .3s linear;
+    }
+
+    #post_description {
+        font-family: Open Sans;
+        width: 100%;
+        border: 1px solid #dfdfdf;
+        padding: 0 15px;
+        border-radius: 25px;
+        -webkit-transition: .3s linear;
+        -o-transition: .3s linear;
+        transition: .3s linear;
+    }
+
+    .vich-file {
+        display: none;
+    }
+</style>
+{{ form_start(form, { attr: {id: 'video-uploader'}}) }}
+<div class="text-center mb-5">
+    <h1 class="font-weight-bold">
+        Publier une vidéo
+    </h1>
+</div>
+{{ form_row(form.title) }}
+{{ form_row(form.hashtag) }}
+{{ form_row(form.category) }}
+{{ form_row(form.subcategory) }}
+{{ form_row(form.description) }}
+<label for="">Vidéo :</label>
+<div class="tab-content">
+    <div class="tab-pane fade show active" id="upload">
+        {{ form_row(form.videoFile, { attr: {id: 'post_videoFile_file', name: 'post_videoFile_file', type: 'file'}}) }}
+        <div id="file-upload1" class="dropzone video">
+
+            <label style="font-weight: bold;" id="file-name" for="post_videoFile_file"><strong>Parcourir ou
+                </strong><span class="box__dragndrop" style="font-weight: initial;">déposer</span></label>
+            <div class="progress">
+                <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 0%"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<label for="">Miniature :</label>
+<div class="tab-content">
+    <div class="tab-pane fade show active" id="upload">
+        {{ form_row(form.imageFile, { attr: {id: 'post_imageFile_file', name: 'post_imageFile_file', type: 'file'}}) }}
+        <div id="file-upload2" class="dropzone image">
+
+            <label style="font-weight: bold;" id="image-name" for="post_imageFile_file"><strong>Parcourir ou
+                </strong><span class="box__dragndrop" style="font-weight: initial;">déposer</span></label>
+            <div class="progress">
+                <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 0%"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<button type="submit" class="viewtube-btn" id="submit-video">Publier</button>
+{{ form_end(form) }}
+{% endblock %}
+
+{% block javascript %}
+<script src="{{ asset('assets/js/dropvideo.js') }}"></script>
+{% endblock %}

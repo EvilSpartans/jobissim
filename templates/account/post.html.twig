@@ -1,0 +1,16 @@
+{% for post in posts %}
+<li>
+    <div class="recent-post-thumb">
+        <a href="{{ path('post_show', { 'id' : post.id}) }}">
+            <div class="postImage" style="background-image: url('../../uploads/images/{{post.image}}');">
+            </div>
+        </a>
+    </div>
+    <div class="recent-post-content">
+        <p><a href="{{ path('post_show', { 'id' : post.id}) }}">{{ post.title}}</a></p>
+        <span>{{ post.createdAt | date('d/m/y') }}</span>
+    </div>
+</li>
+{% else %}
+<p class="mx-auto mt-5">Aucune publication pour le moment</p>
+{% endfor %}

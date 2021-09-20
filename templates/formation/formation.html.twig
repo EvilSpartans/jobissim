@@ -1,0 +1,53 @@
+{% for formation in formations %}
+<div class="col-xl-4 col-lg-4 col-md-6">
+    <div class="video-item-card">
+        <div class="video-thumb">
+            <video class="viewtube-player" preload="none" playsinline controls
+                data-poster="{{ vich_uploader_asset(formation, 'imageFile')  }}">
+                <source src="{{ vich_uploader_asset(formation, 'videoFile')  }}" type="video/mp4" />
+            </video>
+        </div>
+        <div class="video-content">
+            <div class="d-flex">
+                <a href="{{ path('account', {'id': formation.user.id}) }}" class="avatar">
+                    {% if formation.user.avatar != '' %}
+                    <img src="{{ vich_uploader_asset(formation.user, 'avatarFile')  }}"
+                        alt="{{formation.user.username}}">
+                    {% else %}
+                    <img src="{{ asset('assets/images/nopic.png')  }}" alt="{{formation.user.username}}">
+                    {% endif %}
+                </a>
+                <div class="my-auto">
+                    <a href="{{ path('post_show', { 'id' : formation.id}) }}">
+                        <h5>{{ formation.title }}</h5>
+                    </a>
+                    <ul class="list-inline">
+                        <li class="list-inline-item">
+                            <a class="author" href="{{ path('account', {'id': formation.user.id}) }}">
+                                {{formation.user.username}}</a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="{{ path('post_like', {'id': formation.id}) }}" title="Like"
+                                class="like-button js-like" data-id="57">
+                                {% if app.user and formation.isLikedByUser(app.user) %}
+                                <i class="fas fa-thumbs-up blueIcon"></i>
+                                {% else %}
+                                <i style="color:#909090;" class="fas fa-thumbs-up"></i>
+                                {% endif %}
+                                <span style="color:#909090;" class="js-likes">{{ formation.likes | length }}</span>
+                            </a>
+                        </li>
+                        <li class="list-inline-item">
+                            <div class="d-flex video-meta-bottom">
+                                103 Vues <i class="fas fa-circle ml-2 mr-2"></i>
+                                {{ formation.createdAt | date('d/m/y') }} </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+<p class="mx-auto mt-5">Aucune vidéo pour le moment</p>
+{% endfor %}

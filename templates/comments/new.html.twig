@@ -1,0 +1,11 @@
+{{ form_start(form, { attr: {id:'commentform', class:'comment-form row'}}) }}
+<div class="container">
+    <div class="row">
+        <div class="col-xl-12">
+            {{ form_row(form.content, { attr: { id:'comment', name:'comment', placeholder: 'Écrire un message...'}}) }}
+        </div>
+        <div class="col-lg-12"><button type="submit">Poster</button>
+        </div>
+    </div>
+</div>
+{{ form_end(form) }}

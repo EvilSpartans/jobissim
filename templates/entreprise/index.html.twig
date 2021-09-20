@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Entreprise{% endblock %}
+
+{% block body %}
+<section class="pt-4 pb-100">
+    <div class="container-fluid">
+        <div class="row">
+            {{ include('entreprise/entreprise.html.twig') }}
+            <div class="col-xl-12">
+                <nav class="navigation pagination">
+                    <div class="nav-links">
+                        {{ include('entreprise/pagination.html.twig') }}
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

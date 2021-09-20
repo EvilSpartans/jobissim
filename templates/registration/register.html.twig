@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription{% endblock %}
+
+{% block body %}
+<style>
+    #registration_form_agreeTerms {
+        margin: 0 !important;
+    }
+</style>
+{{ form_start(registrationForm, { attr: {id: 'video-uploader'}}) }}
+<div class="text-center mb-5">
+    <h1 class="font-weight-bold">
+        Inscription
+    </h1>
+</div>
+{{ form_row(registrationForm.firstname) }}
+{{ form_row(registrationForm.lastname) }}
+{{ form_row(registrationForm.email) }}
+{{ form_row(registrationForm.password) }}
+{{ form_row(registrationForm.agreeTerms) }}
+
+<button type="submit" class="btn">S'inscrire</button>
+{{ form_end(registrationForm) }}
+{% endblock %}

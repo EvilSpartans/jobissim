@@ -1,0 +1,104 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier le profil{% endblock %}
+
+{% block body %}
+<style>
+    .breadcrumbs {
+        background-image: url('./uploads/couvertures/{{ user.cover }}') !important;
+        border-radius: 15px;
+        text-align: center;
+        overflow: hidden;
+        padding: 90px 0;
+        margin-top: 30px;
+        background-size: cover !important;
+        background-position: center !important;
+        background-repeat: no-repeat !important;
+    }
+
+    .custom-file-label {
+        opacity: 0;
+    }
+
+    .custom-file-input {
+        opacity: 1;
+    }
+
+    #user_biography {
+        font-family: Open Sans;
+        width: 100%;
+        border: 1px solid #dfdfdf;
+        padding: 0 15px;
+        border-radius: 25px;
+        -webkit-transition: .3s linear;
+        -o-transition: .3s linear;
+        transition: .3s linear;
+    }
+
+    .vich-file {
+        display: none;
+    }
+</style>
+
+<section class="breadcrumbs">
+    <div class="container">
+        <h1>{{ user.username }}</h1>
+        <ul class="trail-items" itemscope="" itemtype="http://schema.org/BreadcrumbList">
+            <li class="trail-item trail-begin"><a href="{{ path('account', {'id': app.user.id}) }}"><span
+                        itemprop="name">Mon compte</span></a>
+                <meta itemprop="position" content="1">
+            </li>
+            <li class="trail-item trail-end"><span itemprop="item"><span itemprop="name">Informations</span></span>
+                <meta itemprop="position" content="3">
+            </li>
+        </ul>
+    </div>
+</section>
+
+{{ form_start(form, { attr: {id: 'video-uploader'}}) }}
+<div class="text-center mb-5">
+    <h1 class="font-weight-bold">
+        Modifier le profil
+    </h1>
+</div>
+{{ form_row(form.firstname) }}
+{{ form_row(form.lastname) }}
+{{ form_row(form.email) }}
+{{ form_row(form.biography) }}
+
+<label for="">Avatar :</label>
+<div class="tab-content">
+    <div class="tab-pane fade show active" id="upload">
+        {{ form_row(form.avatarFile, { attr: {id: 'post_videoFile_file', name: 'post_videoFile_file', type: 'file'}}) }}
+        <div id="file-upload1" class="dropzone video">
+
+            <label style="font-weight: bold;" id="avatar-name" for="user_avatarFile_file"><strong>Parcourir ou
+                </strong><span class="box__dragndrop" style="font-weight: initial;">déposer</span></label>
+            <div class="progress">
+                <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 0%"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<label for="">Couverture :</label>
+<div class="tab-content">
+    <div class="tab-pane fade show active" id="upload">
+        {{ form_row(form.coverFile, { attr: {id: 'post_imageFile_file', name: 'post_imageFile_file', type: 'file'}}) }}
+        <div id="file-upload2" class="dropzone image">
+
+            <label style="font-weight: bold;" id="cover-name" for="user_coverFile_file"><strong>Parcourir ou
+                </strong><span class="box__dragndrop" style="font-weight: initial;">déposer</span></label>
+            <div class="progress">
+                <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 0%"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<button type="submit" class="btn">Enregistrer</button>
+{{ form_end(form) }}
+{% endblock %}
+
+{% block javascript %}
+<script src="{{ asset('assets/js/dropavatarcover.js') }}"></script>
+{% endblock %}

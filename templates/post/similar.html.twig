@@ -1,0 +1,27 @@
+{% for post in posts %}
+<li>
+    <div class="related-video-thumb">
+        <a href="{{ path('post_show', { 'id' : post.id}) }}">
+            <img src="{{ vich_uploader_asset(post, 'imageFile')  }}" alt="Image">
+        </a>
+    </div>
+    <div class="related-video-content">
+        <p>
+            <a href="{{ path('post_show', { 'id' : post.id}) }}">{{ post.title}}</a>
+        </p>
+        <ul>
+            <li>
+                <a class="author" href="{{ path('account', {'id': post.user.id}) }}">
+                    {{ post.user.username }} </a>
+            </li>
+            <li>
+                <div class="d-flex video-meta-bottom">
+                    703 Vues •
+                    {{ post.createdAt | date('d/m/y') }} </div>
+            </li>
+        </ul>
+    </div>
+</li>
+{% else %}
+<p class="mx-auto mt-5">Aucune publication pour le moment</p>
+{% endfor %}

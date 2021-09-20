@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvelle conversation{% endblock %}
+
+{% block body %}
+{{ form_start(form) }}
+{{ form_row(form.participants, {attr: {class: 'js-participants'}}) }}
+<button type="submit">Valider</button>
+{{ form_end(form) }}
+{% endblock %}
+
+{% block javascript %}
+<script>
+    $(document).ready(function () {
+        $('.js-participants').select2();
+    });
+</script>
+{% endblock %}
