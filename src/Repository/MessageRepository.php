@@ -22,7 +22,7 @@ class MessageRepository extends ServiceEntityRepository
     public function findByConversation($id)
     {
         return $this->createQueryBuilder('p')
-            ->orderBy('p.id', 'DESC')
+            ->orderBy('p.id', 'ASC')
             ->join('p.messaging', 'Conversation')
             ->andWhere('Conversation.id = :id')
             ->setParameter('id', $id)

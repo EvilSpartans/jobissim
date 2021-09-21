@@ -15,6 +15,12 @@
         <server name="SHELL_VERBOSITY" value="-1" />
         <server name="SYMFONY_PHPUNIT_REMOVE" value="" />
         <server name="SYMFONY_PHPUNIT_VERSION" value="9.5" />
+
+        <!-- ###+ pusher/pusher-php-server ### -->
+        <env name="PUSHER_APP_ID" value=""/>
+        <env name="PUSHER_KEY" value=""/>
+        <env name="PUSHER_SECRET" value=""/>
+        <!-- ###- pusher/pusher-php-server ### -->
     </php>
 
     <testsuites>

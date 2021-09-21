@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use Pusher\Pusher;
 use App\Entity\User;
 use App\Entity\Message;
 use App\Entity\Messaging;
@@ -13,6 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class MessagingController extends AbstractController
 {
@@ -38,6 +40,18 @@ class MessagingController extends AbstractController
         $conversations = $messagingRepository->findByAuthorOrParticipants($user);
         $messages = $messageRepository->findByConversation($messaging);
 
+        // Pusher
+        $options = array(
+            'cluster' => 'eu',
+            'useTLS' => true
+        );
+        $pusher = new Pusher(
+            'ba75523bee28d7c644f2',
+            '9597b6daf0fb4e20fda2',
+            '1266737',
+            $options
+        );
+
         //New message
         $message = new Message();
         $form = $this->createForm(MessageType::class, $message);
@@ -50,7 +64,20 @@ class MessagingController extends AbstractController
             $entityManager->persist($message);
             $entityManager->flush();
 
-            return $this->redirectToRoute('messaging_show', ['id' => $messaging->getId()], Response::HTTP_SEE_OTHER);
+            $data['content'] = $message->getContent();
+            $data['image'] = $message->getAuthor()->getAvatar();
+            $data['user'] = $message->getAuthor()->getUsername();
+            $data['date'] = $message->getCreatedAt()->format('d/m/y');
+            $key = $messaging->getId();
+
+            if ($pusher->trigger("my-channel-${key}", 'my_event', $data)) {
+                echo 'success';
+            } else {
+                header('', true, 403);
+                echo 'error';
+            }
+
+            return new JsonResponse(Response::HTTP_OK);
         }
 
         if ($messaging->getAuthor() == $user || $messaging->getParticipants()->contains($user) != false) {
@@ -109,6 +136,38 @@ class MessagingController extends AbstractController
             $entityManager->flush();
 
             return $this->redirectToRoute('messaging_show', ['id' => $conversation->getId()], Response::HTTP_SEE_OTHER);
+        }
+    }
+
+    /**
+     * @Route("/pusher_auth{id}", name="pusher_auth", methods={"GET","POST"})
+     */
+    public function pusher()
+    {
+        $options = array(
+            'cluster' => 'eu',
+            'useTLS' => true
+        );
+        $pusher = new Pusher(
+            'ba75523bee28d7c644f2',
+            '9597b6daf0fb4e20fda2',
+            '1266737',
+            $options
+        );
+        $user = $this->getUser();
+
+        function user_is_authenticated($user)
+        {
+            if ($user) {
+                return true;
+            }
+        }
+
+        if (user_is_authenticated($user)) {
+            echo $pusher->socket_auth($_POST['private-chat'], $_POST['1266737']);
+        } else {
+            header('', true, 403);
+            echo "Forbidden";
         }
     }
 }

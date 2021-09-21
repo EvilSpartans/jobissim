@@ -44,9 +44,9 @@
                         <div class="chat-container">
                             {{ include('messaging/messages.html.twig')}}
                             <div class="form-group mt-3 mb-0">
-                                {{ form_start(form) }}
+                                {{ form_start(form, {attr: {class: "newMessage"}}) }}
                                 {{ form_row(form.content, {attr: {class: "form-control", rows:"3"}}) }}
-                                <button>Envoyer</button>
+                                <button class="eventpusher">Envoyer</button>
                                 {{ form_end(form) }}
                             </div>
                         </div>
@@ -62,5 +62,54 @@
 
 </div>
 
+{% endblock %}
 
+{% block javascript %}
+<script>
+    $(".newMessage").submit(function (e) {
+        e.preventDefault();
+        var url = "{{ path('messaging_show', {'id': messaging.id}) }}";
+        var formSerialize = $(this).serialize();
+        $('.newMessage').trigger("reset");
+
+        $.post(url, formSerialize, function (response) {
+            console.log(response);
+        }, 'JSON');
+    });
+</script>
+
+<script src="https://js.pusher.com/7.0/pusher.min.js"></script>
+<script type="text/javascript">
+
+    Pusher.logToConsole = true;
+
+    var pusher = new Pusher('ba75523bee28d7c644f2', {
+        cluster: 'eu',
+    });
+
+    var channel = pusher.subscribe('my-channel-' + JSON.parse('{{ messaging.id | json_encode | raw }}'));
+
+    channel.bind('my_event',
+        function (data) {
+            console.log(data);
+            $('.lala').append('<li class = "chat-left"><div class="chat-avatar"><img src="/uploads/avatars/' + data['image'] + '"><div class="chat-name">' + data['user'] + '</div></div><div class="chat-text">' + data['content'] + '</div><div class="chat-hour">' + data['date'] + '<span class="fa fa-check-circle"></span></div>');
+        });
+
+    channel.bind('pusher:subscription_succeeded', function (members) {
+        console.log('successfully subscribed!');
+    });
+
+    function ajaxCall(ajax_url, ajax_data) {
+        $.ajax({
+            type: "POST",
+            url: ajax_url,
+            dataType: "json",
+            data: ajax_data,
+            success: function (response) {
+                console.log(response);
+            },
+            error: function (msg) { }
+        });
+    }
+</script>
 {% endblock %}

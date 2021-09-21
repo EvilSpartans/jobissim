@@ -39,8 +39,6 @@ class MessagingRepository extends ServiceEntityRepository
             ->where('p.author = :currentUser AND Participants.id = :user')
             ->orWhere('Participants.id = :currentUser AND p.author = :user')
             ->setParameters(['user' => $user, 'currentUser' => $currentUser])
-            ->groupBy('p')
-            ->andWhere('count(Participants) = 1')
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
@@ -50,9 +48,8 @@ class MessagingRepository extends ServiceEntityRepository
     // {
     //     return $this->createQueryBuilder('d')
     //         ->leftJoin('d.participants', 'p')
-    //         ->andWhere('p.id = :user1')
-    //         ->andWhere('p.id = :user2')
-    //         ->andWhere('count(p) = 2')
+    //         ->andWhere('p.user = :user1')
+    //         ->andWhere('p.user = :user2')
     //         ->setParameters(['user1' => $user, 'user2' => $currentUser])
     //         ->setMaxResults(1)
     //         ->getQuery()
