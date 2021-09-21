@@ -62,21 +62,20 @@
         flex-direction: column;
     }
 
-    .users {
+    #users {
         padding: 0;
         overflow-y: auto;
         max-height: 400px;
     }
 
-    .users .person {
+    #users .person, #users li {
         position: relative;
         width: 100%;
-        padding: 10px 1rem;
         cursor: pointer;
         border-bottom: 1px solid #f0f4f8;
     }
 
-    .users .person:hover {
+    #users .person:hover,  #users li:hover {
         background-color: #ffffff;
         background-image: -webkit-gradient(linear, left top, left bottom, from(#e9eff5), to(#ffffff));
         background-image: -webkit-linear-gradient(right, #e9eff5, #ffffff);
@@ -86,7 +85,7 @@
         background-image: linear-gradient(right, #e9eff5, #ffffff);
     }
 
-    .users .person.active-user {
+    #users .person.active-user,  #users li:hover  {
         background-color: #ffffff;
         background-image: -webkit-gradient(linear, left top, left bottom, from(#f7f9fb), to(#ffffff));
         background-image: -webkit-linear-gradient(right, #f7f9fb, #ffffff);
@@ -96,17 +95,17 @@
         background-image: linear-gradient(right, #f7f9fb, #ffffff);
     }
 
-    .users .person:last-child {
+    #users .person:last-child {
         border-bottom: 0;
     }
 
-    .users .person .user {
+    #users .person .user {
         display: inline-block;
         position: relative;
         margin-right: 10px;
     }
 
-    .users .person .user img {
+    .users .person .user img, .user img{
         width: 48px;
         height: 48px;
         -webkit-border-radius: 50px;
@@ -142,13 +141,13 @@
         background: #fd7274;
     }
 
-    .users .person p.name-time {
+    .users .person p.name-time,  .name-time{
         font-weight: 600;
         font-size: .85rem;
         display: inline-block;
     }
 
-    .users .person p.name-time .time {
+    .users .person p.name-time .time,  .time {
         font-weight: 400;
         font-size: .7rem;
         text-align: right;
@@ -165,7 +164,7 @@
             display: none;
         }
 
-        .users .person p.name-time .time {
+        .users .person p.name-time .time,  .time {
             display: none;
         }
     }
@@ -185,7 +184,7 @@
         line-height: 100%;
     }
 
-    .selected-user span.name {
+    .selected-user span.name, #contribution-name.span.name {
         font-weight: 700;
     }
 

@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Entity\Messaging;
 use App\Entity\User;
 use App\Messaging\Builder;
-use App\Messaging\Manager;
 use App\Repository\MessagingRepository;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\View\View;
@@ -51,7 +49,7 @@ class ApiMessageController extends AbstractFOSRestController
         if ($user !== $this->getUser()) {
             throw new \LogicException('Unauthorized user to make this action');
         }
-dd($builder->getMessagings($messagingRepository->findByAuthorOrParticipants($user)));
+//dd($builder->getMessagings($messagingRepository->findByAuthorOrParticipants($user)));
         try {
             return $this->view($builder->getMessagings($messagingRepository->findByAuthorOrParticipants($user)), Response::HTTP_OK);
         } catch (\Exception $e) {

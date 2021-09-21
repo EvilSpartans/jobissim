@@ -20,7 +20,7 @@ class MessagingRepository extends ServiceEntityRepository
         parent::__construct($registry, Messaging::class);
     }
 
-    public function findByAuthorOrParticipants(User $id)
+    public function findByAuthorOrParticipants(?User $id)
     {
         return $this->createQueryBuilder('m')
             ->leftJoin('m.participants', 'p')

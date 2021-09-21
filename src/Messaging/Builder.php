@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Messaging;
 
 use App\Entity\Messaging;
 
-class Builder
+final class Builder
 {
     public function getMessagings(array $messagings): array
     {
@@ -13,10 +15,10 @@ class Builder
         foreach($messagings as $messaging) {
             $output['messaging'][] = [
                 'id' => $messaging->getId(),
-                'createdAt' => $messaging->getCreatedAt(),
+                'createdAt' => $messaging->getCreatedAt()->format('d/m/y'),
                 'author' => $messaging->getAuthor(),
                 'contributors' => $messaging->getParticipants(),
-                'messages' => $messaging->getMessages()
+                'messages' => $messaging->getMessages(),
             ];
         }
 
