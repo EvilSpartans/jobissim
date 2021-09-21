@@ -6,6 +6,7 @@ use App\Repository\MessageRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Entity(repositoryClass=MessageRepository::class)
@@ -32,6 +33,7 @@ class Message
 
     /**
      * @ORM\Column(type="text")
+     * @Serializer\Groups(groups="chat_list")
      */
     private $content;
 

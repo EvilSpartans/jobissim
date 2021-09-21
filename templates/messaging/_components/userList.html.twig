@@ -1,0 +1,71 @@
+<ul class="users">
+    <li id="messaging_show" class="person" data-chat="person1">
+        <div class="user" id="user">
+
+            <span class="status busy"></span>
+        </div>
+        <p class="name-time">
+            <span class="name" id="participant_name"></span>
+            <span class="time" id="participant_time"></span>
+        </p>
+    </li>
+</ul>
+
+{#
+    {% for conversation in conversations %}
+        <a href="{{ path('messaging_show', {'id': conversation.id}) }}">
+            <li class="person" data-chat="person1">
+                <!-- Cas 1 : conversation entre deux personnes -->
+                {% if conversation.participants | length == 1 %}
+                    <!-- Si l'auteur est le currentUser -->
+                    {% if conversation.author == app.user %}
+                        {% for participant in conversation.participants %}
+                            <div class="user">
+                                {% if participant.avatar != '' %}
+                                    <img src="{{ vich_uploader_asset(participant, 'avatarFile')  }}" alt="{{ participant.username }}">
+                                {% else %}
+                                    <img src="{{ asset('assets/images/nopic.png')  }}" alt="{{ participant.username }}">
+                                {% endif %}
+                                <span class="status busy"></span>
+                            </div>
+                            <p class="name-time">
+                                <span class="name">{{ participant.username }}</span>
+                                <span class="time">{{ conversation.createdAt|date('d/m/y') }}</span>
+                            </p>
+                        {% endfor %}
+                        <!-- Si l'auteur n'est pas le currentUser -->
+                    {% else %}
+                        <div class="user">
+                            {% if conversation.author.avatar != '' %}
+                                <img src="{{ vich_uploader_asset(conversation.author, 'avatarFile')  }}"
+                                     alt="{{ conversation.author.username }}">
+                            {% else %}
+                                <img src="{{ asset('assets/images/nopic.png')  }}" alt="{{ conversation.author.username }}">
+                            {% endif %}
+                            <span class="status busy"></span>
+                        </div>
+                        <p class="name-time">
+                            <span class="name">{{ conversation.author.username }}</span>
+                            <span class="time">{{ conversation.createdAt|date('d/m/y') }}</span>
+                        </p>
+                    {% endif %}
+                    <!-- Cas 2 : conversation groupée -->
+                {% else %}
+                    <div class="user">
+                        {% if conversation.author.avatar != '' %}
+                            <img src="{{ vich_uploader_asset(conversation.author, 'avatarFile')  }}"
+                                 alt="{{ conversation.author.username }}">
+                        {% else %}
+                            <img src="{{ asset('assets/images/nopic.png')  }}" alt="{{ conversation.author.username }}">
+                        {% endif %}
+                        <span class="status busy"></span>
+                    </div>
+                    <p class="name-time">
+                        <span class="name">Groupe : {{ conversation.author.username }}</span>
+                        <span class="time">{{ conversation.createdAt|date('d/m/y') }}</span>
+                    </p>
+                {% endif %}
+            </li>
+        </a>
+    {% endfor %}
+</ul> #}
