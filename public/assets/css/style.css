@@ -883,6 +883,11 @@ body.admin-bar .fixed-top {
     color: #fff;
 }
 
+.badge-jobi {
+    color: #fff;
+    background: linear-gradient(to right, #5287ef, #e298f2) !important;
+}
+
 /*--------------------------------------------------------------
 ## Sidebar Menu
 --------------------------------------------------------------*/

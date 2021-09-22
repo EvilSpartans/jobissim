@@ -60,6 +60,7 @@ class MessagingController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $message->setAuthor($user);
             $message->setMessaging($messaging);
+            $message->addReadBy($user);
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($message);
             $entityManager->flush();
@@ -81,6 +82,7 @@ class MessagingController extends AbstractController
         }
 
         if ($messaging->getAuthor() == $user || $messaging->getParticipants()->contains($user) != false) {
+
             return $this->render('messaging/show.html.twig', [
                 'conversations' => $conversations,
                 'messaging' => $messaging,

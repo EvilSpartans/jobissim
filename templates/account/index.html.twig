@@ -217,9 +217,11 @@
                     {% if user.id == app.user.id %}
                     <h4 class="widget-title">Navigation</h4>
                     <ul>
-                        <li><a href="{{ path('notifications') }}">Notifications</a>
+                        <li><a href="{{ path('notifications') }}">Notifications <span class="badge badge-jobi">
+                                    {{ CountNotification.count() }}</span></a>
                         </li>
-                        <li><a href="{{ path('messaging') }}">Messagerie</a>
+                        <li><a href="{{ path('messaging') }}">Messagerie <span class="badge badge-jobi">
+                                    {{ CountMessage.count() }}</span></a>
                         </li>
                         <li><a href="{{ path('account_edit', {'id': user.id}) }}">Paramètres</a>
                         </li>

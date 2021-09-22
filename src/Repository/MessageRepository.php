@@ -19,6 +19,12 @@ class MessageRepository extends ServiceEntityRepository
         parent::__construct($registry, Message::class);
     }
 
+    /**
+     * Find messages in conversations
+     *
+     * @param [type] $id
+     * @return void
+     */
     public function findByConversation($id)
     {
         return $this->createQueryBuilder('p')
@@ -28,5 +34,23 @@ class MessageRepository extends ServiceEntityRepository
             ->setParameter('id', $id)
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * Count unread messages in conversations
+     *
+     * @param [type] $user
+     * @return void
+     */
+    public function countMessages($user)
+    {
+        return $this->createQueryBuilder('m')
+            ->select('COUNT(m)')
+            ->join('m.messaging', 'C')
+            ->andWhere(':user MEMBER OF C.participants')
+            ->andWhere(':user NOT MEMBER OF m.readBy')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 }
