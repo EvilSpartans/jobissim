@@ -92,4 +92,20 @@ class PostRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * Search posts
+     *
+     * @param [type] $term
+     * @return void
+     */
+    public function search($term)
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.title LIKE :term')
+            ->orWhere('p.hashtag LIKE :term')
+            ->setParameter('term', '%' . $term . '%')
+            ->getQuery()
+            ->execute();
+    }
 }

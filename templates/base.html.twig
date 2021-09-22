@@ -56,10 +56,10 @@
                     </div>
                 </div>
                 <div class="col-xl-7 col-lg-7 my-auto d-none d-xl-block">
-                    <form class="ajax-search-form" action="#">
-                        <input type="text" name="s" class="keyword" placeholder="Rechercher">
+                    <form id="searchForm" class="ajax-search-form" action="{{ path('search') }}" method="POST">
+                        <input type="search" name="search" class="keyword" placeholder="Rechercher">
                         <button type="submit"><i class="fa fa-search"></i></button>
-                        <ul class="datafetch"></ul>
+                        <div class="datafetch"></div>
                     </form>
                 </div>
                 <div class="col-xl-1 col-lg-1 my-auto text-right">
@@ -350,11 +350,12 @@
     <!-- End BackTop -->
 
     <!-- JS -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="{{ asset('assets/js/plugins.js')}}"></script>
     <script src="{{ asset('assets/js/main.js')}}"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="{{ asset('assets/js/like.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="{{ asset('assets/js/search.js') }}"></script>
     <!-- End JS -->
     {% block javascript %}
     {% endblock %}

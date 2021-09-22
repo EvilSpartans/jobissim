@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Rechercher{% endblock %}
+
+{% block body %}
+
+<style>
+    .widget li::before {
+        content: "";
+    }
+
+    .bid {
+        height: 40px !important;
+    }
+</style>
+
+<section class="pt-4 pb-100">
+    <div class="container-fluid">
+        <div class="widget">
+
+            <h4 class="widget-title">Résultat(s) de la recherche</h4>
+
+            <!-- Users -->
+            {% for user in users %}
+            <ul>
+                <li><a href="{{ path('account', {'id': user.id}) }}">
+                        <div class="bid">{% if user.avatar != '' %}
+                            <img class="avatar" src="{{ vich_uploader_asset(user, 'avatarFile')  }}"
+                                alt="{{user.username}}">
+                            {% else %}
+                            <img class="avatar" src="{{ asset('assets/images/nopic.png')  }}" alt="{{user.username}}">
+                            {% endif %}
+                            @ {{ user.username }}
+                        </div>
+
+                    </a></li>
+            </ul>
+
+            {% endfor %}
+            <!--  -->
+
+            <!-- Posts -->
+            {% for post in posts %}
+            <ul>
+                <li><a href="{{ path('post_show', {'id': post.id}) }}">
+                        <div class="bid"><img class="avatar" src="{{ vich_uploader_asset(post, 'imageFile')  }}"
+                                alt="{{post.title}}">
+                            # {{ post.title }}</div>
+                    </a></li>
+            </ul>
+
+            {% endfor %}
+            <!--  -->
+        </div>
+    </div>
+</section>
+{% endblock %}
