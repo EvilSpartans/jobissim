@@ -3,7 +3,7 @@ $("#searchForm").keyup(function () {
   var DATA = { libelle: term };
   $.ajax({
     type: "POST",
-    url: "{{ path('search')}}",
+    url: "{{ path('autocomplete')}}",
     data: DATA,
     success: function (data) {
       $.each(data, function (k, el) {

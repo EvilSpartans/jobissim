@@ -108,4 +108,17 @@ class PostRepository extends ServiceEntityRepository
             ->getQuery()
             ->execute();
     }
+
+    /**
+     * Autocomplete
+     *
+     * @return void
+     */
+    public function autocomplete()
+    {
+        return $this->createQueryBuilder('u')
+            ->select("p.title OR p.hashtag")
+            ->getQuery()
+            ->execute();
+    }
 }

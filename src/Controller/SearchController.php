@@ -15,7 +15,7 @@ class SearchController extends AbstractController
     /**
      * @Route("/search", name="search", methods={"GET","POST"})
      */
-    public function user(UserRepository $userRepository, PostRepository $postRepository, Request $request): Response
+    public function search(UserRepository $userRepository, PostRepository $postRepository): Response
     {
 
         if (isset($_POST['search']) && !empty($_POST['search'])) {
@@ -29,13 +29,22 @@ class SearchController extends AbstractController
             $posts = null;
         }
 
-        if ($request->isXmlHttpRequest()) {
-            return new JsonResponse(Response::HTTP_OK);
-        }
-
         return $this->render('search/index.html.twig', [
             'users' => $users,
             'posts' => $posts
         ]);
+    }
+
+    /**
+     * @Route("/autocomplete", name="autocomplete", methods={"GET","POST"})
+     */
+    public function autocomplete(UserRepository $userRepository, PostRepository $postRepository, Request $request): Response
+    {
+        $users = $userRepository->autocomplete();
+        $posts = $postRepository->autocomplete();
+
+        if ($request->isXmlHttpRequest()) {
+            return new JsonResponse(Response::HTTP_OK);
+        }
     }
 }
