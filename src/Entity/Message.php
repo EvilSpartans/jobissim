@@ -23,6 +23,7 @@ class Message
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="messages")
      * @ORM\JoinColumn(nullable=false)
+     * @Serializer\Groups(groups="messages_list")
      */
     private $author;
 
@@ -33,13 +34,14 @@ class Message
 
     /**
      * @ORM\Column(type="text")
-     * @Serializer\Groups(groups="chat_list")
+     * @Serializer\Groups(groups="chat_list", "messages_list")
      */
     private $content;
 
     /**
      * @ORM\ManyToOne(targetEntity=Messaging::class, inversedBy="messages")
      * @ORM\JoinColumn(nullable=false)
+     * @Serializer\Groups(groups="messages_list")
      */
     private $messaging;
 

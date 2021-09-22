@@ -24,10 +24,9 @@ class MessagingRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('m')
             ->leftJoin('m.participants', 'p')
-         //   ->leftJoin('m.messages', 'msg')
             ->where('m.author = :id')
             ->orWhere('p.id = :id')
-       //     ->orderBy('msg.id', 'DESC')
+            ->orderBy('m.createdAt', 'DESC')
             ->setParameter('id', $id)
             ->getQuery()
             ->getResult();

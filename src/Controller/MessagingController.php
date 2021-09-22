@@ -142,6 +142,8 @@ class MessagingController extends AbstractController
 
     /**
      * @Route("/pusher_auth{id}", name="pusher_auth", methods={"GET","POST"})
+     *
+     * @throws \Pusher\PusherException
      */
     public function pusher()
     {
@@ -165,7 +167,7 @@ class MessagingController extends AbstractController
         }
 
         if (user_is_authenticated($user)) {
-            echo $pusher->socket_auth($_POST['private-chat'], $_POST['1266737']);
+            echo $pusher->socketAuth($_POST['private-chat'], $_POST['1266737']);
         } else {
             header('', true, 403);
             echo "Forbidden";
@@ -175,9 +177,12 @@ class MessagingController extends AbstractController
     /**
      * @Route("/chat", name="chat", methods={"GET"})
      */
-    public function messaging(): Response
+    public function chat(): Response
     {
-       // $messages = $messageRepository->findByConversation($messaging);
+        if (!$this->getUser()) {
+            throw new \LogicException('You don\'t have access to this page');
+        }
+
         return $this->render('messaging/messaging.html.twig');
     }
 }

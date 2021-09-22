@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\Messaging;
 use App\Entity\User;
 use App\Messaging\Builder;
+use App\Repository\MessageRepository;
 use App\Repository\MessagingRepository;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\View\View;
@@ -63,30 +65,27 @@ class ApiMessageController extends AbstractFOSRestController
      * @OA\Response(
      *     response="200",
      *     description="retrieve list of chat for current user successfully",
-     *     @OA\Schema(@OA\Items(ref=@Model(type="App\Entity\Messaging")))
+     *     @OA\Schema(@OA\Items(ref=@Model(type="App\Entity\Message")))
      * )
      * @OA\Response(response="404", description="entity not found")
      * @OA\Response(response="403", description="Unauthorized user to make this action")
      * @OA\Response(response="500", description="server error")
      *
-     * @FOSRest\Get("get-messages-by-user/{id}", name="get_messages_by_user", methods={"GET"})
+     * @FOSRest\Get("get-messages-by-messaging/{id}", name="get_messages", methods={"GET"})
      * @FOSRest\View(serializerGroups={"messages_list"}, statusCode=Response::HTTP_OK)
      *
-     * @param User $user
-     * @param MessagingRepository $messagingRepository
-     * @param Builder $builder
-     *
+     * @param MessageRepository $messageRepository
      * @return View
      *
      * @throws \Exception
      */
-    public function getMessages(User $user, MessagingRepository $messagingRepository, Builder $builder): View
+    public function getMessages(Messaging $messaging, MessageRepository $messageRepository): View
     {
-        if ($user !== $this->getUser()) {
+        if (!$this->getUser()) {
             throw new \LogicException('Unauthorized user to make this action');
         }
         try {
-            $builder->getMessagings($messagingRepository->findByAuthorOrParticipants($user));
+            return $this->view($messageRepository->getMessages($messaging->getId()), Response::HTTP_OK);
         } catch (\Exception $e) {
             throw new \Exception($e);
         }

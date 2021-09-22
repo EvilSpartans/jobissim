@@ -55,13 +55,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Serializer\Groups(groups="chat_list")
+     * @Serializer\Groups(groups="chat_list", "messages_list")
      */
     private $firstname;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Serializer\Groups(groups="chat_list")
+     * @Serializer\Groups(groups="chat_list", "messages_list")
      */
     private $lastname;
 

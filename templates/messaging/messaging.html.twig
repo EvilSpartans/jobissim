@@ -21,7 +21,7 @@
                                 </div>
                                 {# a remplacer par l'input sur cette page #}
                                 <a href="{{ path('messaging_new') }}" class="text-center">Nouvelle conversation</a>
-                                {{ include('messaging/_components/userList.html.twig')}}
+                                <ul id="users"></ul>
                             </div>
                         </div>
                         <div class="col-xl-8 col-lg-8 col-md-8 col-sm-9 col-9">
@@ -50,7 +50,7 @@
 <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
 <script>
     $(document).ready(function() {
-          $('.js-participants').select2()
+        $('.js-participants').select2()
         $.ajax({
             url: '{{ path('chat_list_by_user', {'id': app.user.id}) }}',
             type: 'GET',
@@ -62,17 +62,22 @@
                 $(data['messaging']).each(function(e, messaging) {
                      let contributors = []
                      $.map(messaging['contributors'], function (contributor) {
-                         contributors.push(contributor.firstname+' '+contributor.lastname)
+                         if (contributor.email !== '{{ app.user.email }}') {
+                               contributors.push(contributor.firstname+' '+contributor.lastname)
+                         } else if (messaging['author'].email) {
+                              contributors.push(messaging['author'].firstname+' '+messaging['author'].lastname)
+                         }
                      })
-                     let childBlock = '<p class="name-time"><span class="name" id="contributor_name">'+contributors+' '+'</span><span class="time" id="contributor_time">'+messaging.createdAt+'</span></p>'
+
+                    let childBlock = '<p class="name-time"><span class="name" id="contributor_name">'+contributors+' '+'</span><span class="time" id="contributor_time">'+messaging.createdAt+'</span></p>'
                     if (contributors.length === 1) {
                         $.map(messaging['contributors'], function (contributor) {
                              if (contributor.avatar) {
-                                 let userBlock = '<li class="user" id="messaging_id"><img src="contributor_avatar" alt="contributor_avatar" style="display: block;" /><span class="status busy"></span>'+childBlock+'</li>'
-                                 img.push(userBlock.replace('contributor_avatar', '/uploads/avatars/' + contributor.avatar).replace('messaging_id', 'messaging_'+messaging.id))
+                                 let userBlock = '<li class="user" id="messaging_id" data-id="msg_id"><img src="contributor_avatar" alt="contributor_avatar" style="display: block;" /><span class="status busy"></span>'+childBlock+'</li>'
+                                 img.push(userBlock.replace('contributor_avatar', '/uploads/avatars/' + contributor.avatar).replace('messaging_id', 'messaging_'+messaging.id).replace('msg_id', messaging.id))
                              } else {
-                                 let imgNotFound = '<li class="user" id="messaging_id"><img src="{{ asset('assets/images/nopic.png')  }}" alt="default picture" style="display: block;" /><span class="status busy"></span>'+childBlock+'</li>'
-                                 img.push(imgNotFound.replace('messaging_id', 'messaging_'+messaging.id))
+                                 let imgNotFound = '<li class="user" id="messaging_id" data-id="msg_id"><img src="{{ asset('assets/images/nopic.png')  }}" alt="default picture" style="display: block;" /><span class="status busy"></span>'+childBlock+'</li>'
+                                 img.push(imgNotFound.replace('messaging_id', 'messaging_'+messaging.id).replace('msg_id', messaging.id))
                              }
                         })
                     } else {
@@ -80,13 +85,14 @@
                          $.map(messaging['author'], function (author) {
                              if (author.avatar) {
                                  let imgAuthor  = '<img src="contributor_avatar" alt="contributor_avatar" style="display: block;" />'
-                                  authorPicture = [imgAuthor.replace('contributor_avatar', '/uploads/avatars/' + author.avatar).replace('messaging_id', 'messaging_'+messaging.id)]
+                                  authorPicture = imgAuthor.replace('contributor_avatar', '/uploads/avatars/' + author.avatar).replace('messaging_id', 'messaging_'+messaging.id).replace('msg_id', messaging.id)
                              } else {
                                   imgAuthor  = '<img src="{{ asset('assets/images/nopic.png')  }}" alt="default picture" style="display: block;" />'
-                                  authorPicture = [imgAuthor.replace('messaging_id', 'messaging_'+messaging.id)]
+                                  authorPicture = imgAuthor.replace('messaging_id', 'messaging_'+messaging.id)
                              }
                         })
-                        result.push('<li class="user" id="messaging_id">'+authorPicture+'<span class="status busy"></span>'+childBlock+'</li>')
+                        let li = '<li class="user" id="messaging_id" data-id="msg_id">'+authorPicture+'<span class="status busy"></span>'+childBlock+'</li>'
+                        result.push(li.replace('messaging_id', 'messaging_'+messaging.id).replace('msg_id', messaging.id))
                     }
                 })
 
@@ -96,22 +102,19 @@
           let html = []
           // appel ajax qui recupére la conversation
           $('#users li').click(function() {
-               $('#chatContainerScroll').html('')
-              let messagingId = $(this).attr('id')
-               $.map(data['messaging'], function (messaging) {
-                    $.map(messaging['messages'], function (message) {
-                        if (messagingId === 'messaging_'+messaging.id) {
-                          //   $('.chat-container').html('<span>'+ message.content+'</span>')
-                             $.map(messaging['contributors'], function (contributor) {
-                                  $('#selected-user').html('<span id="contributors-name">'+messaging.author.firstname+' '+messaging.author.lastname+', '+contributor.firstname+' '+contributor.lastname+'</span>')
-                                   let chatMessages = '<div class="lala"><li class="chat-left"><div class="chat-avatar"><img src="contributor_avatar" alt="contributor_avatar" style="display: block;" /></div></li></div>'
-                                   html.push(chatMessages.replace('contributor_avatar', '/uploads/avatars/' + contributor.avatar).replace('messaging_id', 'messaging_'+messaging.id))
-                             })
-                       }
-               })
-               console.log(html)
-               $('#chatContainerScroll').html(html)
-          })
+              let messages = []
+              let messagingId = $(this).data('id')
+              $.ajax({
+                 url: '{{ path('get_messages', {'id': 'messagingId'}) }}'.replace('messagingId', messagingId),
+                 type: 'GET',
+                 success: function (data) {
+                    $(data).each(function(e, messaging) {
+                       console.log(messaging.content)
+                       messages.push(messaging.content)
+                    })
+                       $('.chat-container').html('<span>'+ messages +'</span>')
+                 }
+              })
       });
     })
    {#

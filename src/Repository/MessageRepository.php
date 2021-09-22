@@ -53,4 +53,22 @@ class MessageRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
+
+    /**
+     * get messages
+     */
+    public function getMessages(int $id)
+    {
+       // SELECT * FROM `message` m
+        //INNER JOIN messaging msg ON msg.id = m.messaging_id
+        //WHERE msg.id = 56
+
+        return $this->createQueryBuilder('m')
+            ->innerJoin('m.messaging', 'msg')
+            ->andWhere('msg.id = :id')
+            ->setParameter('id', $id)
+            ->orderBy('m.id', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }
