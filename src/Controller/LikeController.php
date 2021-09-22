@@ -53,7 +53,9 @@ class LikeController extends AbstractController
         $manager->persist($like, $post);
         $manager->flush();
 
-        $newNotification->like($postUser);
+        if ($post->getUser() != $user) {
+            $newNotification->like($postUser);
+        }
 
         return $this->json([
             'code' => 200,

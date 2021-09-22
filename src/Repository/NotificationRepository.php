@@ -49,7 +49,7 @@ class NotificationRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('m')
             ->select('COUNT(m)')
             ->Where('m.user = :user')
-            ->andWhere('m.seen is null')
+            ->andWhere('m.seen = false')
             ->setParameter('user', $user)
             ->getQuery()
             ->getSingleScalarResult();
