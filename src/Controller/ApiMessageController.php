@@ -44,14 +44,49 @@ class ApiMessageController extends AbstractFOSRestController
      *
      * @throws \Exception
      */
-    public function getChat(User $user, MessagingRepository $messagingRepository, Builder $builder): View
+    public function getListChat(User $user, MessagingRepository $messagingRepository, Builder $builder): View
     {
         if ($user !== $this->getUser()) {
             throw new \LogicException('Unauthorized user to make this action');
         }
-//dd($builder->getMessagings($messagingRepository->findByAuthorOrParticipants($user)));
         try {
             return $this->view($builder->getMessagings($messagingRepository->findByAuthorOrParticipants($user)), Response::HTTP_OK);
+        } catch (\Exception $e) {
+            throw new \Exception($e);
+        }
+    }
+
+    /**
+     * @Security("is_granted('ROLE_USER')")
+     *
+     * @OA\Tag(name="Messages")
+     * @OA\Response(
+     *     response="200",
+     *     description="retrieve list of chat for current user successfully",
+     *     @OA\Schema(@OA\Items(ref=@Model(type="App\Entity\Messaging")))
+     * )
+     * @OA\Response(response="404", description="entity not found")
+     * @OA\Response(response="403", description="Unauthorized user to make this action")
+     * @OA\Response(response="500", description="server error")
+     *
+     * @FOSRest\Get("get-messages-by-user/{id}", name="get_messages_by_user", methods={"GET"})
+     * @FOSRest\View(serializerGroups={"messages_list"}, statusCode=Response::HTTP_OK)
+     *
+     * @param User $user
+     * @param MessagingRepository $messagingRepository
+     * @param Builder $builder
+     *
+     * @return View
+     *
+     * @throws \Exception
+     */
+    public function getMessages(User $user, MessagingRepository $messagingRepository, Builder $builder): View
+    {
+        if ($user !== $this->getUser()) {
+            throw new \LogicException('Unauthorized user to make this action');
+        }
+        try {
+            $builder->getMessagings($messagingRepository->findByAuthorOrParticipants($user));
         } catch (\Exception $e) {
             throw new \Exception($e);
         }

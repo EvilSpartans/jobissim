@@ -169,7 +169,7 @@
         }
     }
 
-    .selected-user {
+    #selected-user {
         width: 100%;
         padding: 0 15px;
         min-height: 64px;
@@ -180,11 +180,11 @@
         border-radius: 0 3px 0 0;
     }
 
-    .selected-user span {
+    #selected-user span {
         line-height: 100%;
     }
 
-    .selected-user span.name, #contribution-name.span.name {
+    #selected-user span.name, #contribution-name.span#name {
         font-weight: 700;
     }
 

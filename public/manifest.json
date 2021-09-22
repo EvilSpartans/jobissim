@@ -1,0 +1,17 @@
+{
+  "name": "project_name",
+  "icons": [
+    {
+      "src": "/img/icons/bird.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "/img/icons/192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    }
+  ],
+  "start_url": "/?source=pwa",
+  "display": "standalone"
+}
