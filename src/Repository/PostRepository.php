@@ -117,7 +117,8 @@ class PostRepository extends ServiceEntityRepository
     public function autocomplete()
     {
         return $this->createQueryBuilder('u')
-            ->select("p.title OR p.hashtag")
+            ->select('u.title')
+            ->addSelect('u.hashtag')
             ->getQuery()
             ->execute();
     }
