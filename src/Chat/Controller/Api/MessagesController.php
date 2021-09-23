@@ -2,13 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Controller;
+namespace App\Chat\Controller\Api;
 
 use App\Entity\Messaging;
-use App\Entity\User;
-use App\Messaging\Builder;
 use App\Repository\MessageRepository;
-use App\Repository\MessagingRepository;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\View\View;
 use FOS\RestBundle\Controller\Annotations as FOSRest;
@@ -20,44 +17,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 /**
  * @FOSRest\Route("/api-message/")
  */
-class ApiMessageController extends AbstractFOSRestController
+class MessagesController extends AbstractFOSRestController
 {
-    /**
-     * @Security("is_granted('ROLE_USER')")
-     *
-     * @OA\Tag(name="Messages")
-     * @OA\Response(
-     *     response="200",
-     *     description="retrieve list of chat for current user successfully",
-     *     @OA\Schema(@OA\Items(ref=@Model(type="App\Entity\Messaging")))
-     * )
-     * @OA\Response(response="404", description="entity not found")
-     * @OA\Response(response="403", description="Unauthorized user to make this action")
-     * @OA\Response(response="500", description="server error")
-     *
-     * @FOSRest\Get("chat-list-by-user/{id}", name="chat_list_by_user", methods={"GET"})
-     * @FOSRest\View(serializerGroups={"chat_list"}, statusCode=Response::HTTP_OK)
-     *
-     * @param User $user
-     * @param MessagingRepository $messagingRepository
-     * @param Builder $builder
-     *
-     * @return View
-     *
-     * @throws \Exception
-     */
-    public function getListChat(User $user, MessagingRepository $messagingRepository, Builder $builder): View
-    {
-        if ($user !== $this->getUser()) {
-            throw new \LogicException('Unauthorized user to make this action');
-        }
-        try {
-            return $this->view($builder->getMessagings($messagingRepository->findByAuthorOrParticipants($user)), Response::HTTP_OK);
-        } catch (\Exception $e) {
-            throw new \Exception($e);
-        }
-    }
-
     /**
      * @Security("is_granted('ROLE_USER')")
      *
@@ -74,7 +35,9 @@ class ApiMessageController extends AbstractFOSRestController
      * @FOSRest\Get("get-messages-by-messaging/{id}", name="get_messages", methods={"GET"})
      * @FOSRest\View(serializerGroups={"messages_list"}, statusCode=Response::HTTP_OK)
      *
+     * @param Messaging $messaging
      * @param MessageRepository $messageRepository
+     *
      * @return View
      *
      * @throws \Exception

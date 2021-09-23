@@ -173,16 +173,4 @@ class MessagingController extends AbstractController
             echo "Forbidden";
         }
     }
-
-    /**
-     * @Route("/chat", name="chat", methods={"GET"})
-     */
-    public function chat(): Response
-    {
-        if (!$this->getUser()) {
-            throw new \LogicException('You don\'t have access to this page');
-        }
-
-        return $this->render('messaging/messaging.html.twig');
-    }
 }

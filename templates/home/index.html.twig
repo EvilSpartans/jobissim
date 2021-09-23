@@ -1,9 +1,6 @@
 {% extends 'base.html.twig' %}
-
 {% block title %}Accueil{% endblock %}
-
 {% block body %}
-
 <!-- Banner -->
 <div class="banners mt-4 mb-5">
     {% for slider in sliders %}
@@ -27,7 +24,6 @@
     {% endfor %}
 </div>
 <!-- End Banner -->
-
 {% if emplois | length > 0 %}
 <!-- Trending Slider -->
 <div class="row mb-4">
@@ -36,20 +32,17 @@
     </div>
     <div class="col-md-6 my-auto">
         <div class="text-right">
-            <a class="viewtube-btn bordered no" href="{{ path('emploi') }}">
-                Voir plus</a>
+            <a class="viewtube-btn bordered no" href="{{ path('emploi') }}">Voir plus</a>
         </div>
     </div>
 </div>
 <!-- End Trending -->
-
 <!-- List -->
 <div class="row justify-content-center video-items" data-slick='{"slidesToShow": 3, "slidesToScroll": 1}'>
     {{ include('emploi/emploi.html.twig') }}
 </div>
 <!-- End List -->
 {% endif %}
-
 {% if formations | length > 0 %}
 <!-- Trending Slider -->
 <div class="row mb-4">
@@ -64,14 +57,12 @@
     </div>
 </div>
 <!-- End Trending -->
-
 <!-- List -->
 <div class="row justify-content-center video-items" data-slick='{"slidesToShow": 3, "slidesToScroll": 1}'>
     {{ include('formation/formation.html.twig') }}
 </div>
 <!-- End List -->
 {% endif %}
-
 {% if cvs | length > 0 %}
 <!-- Trending Slider -->
 <div class="row mb-4">
@@ -86,14 +77,12 @@
     </div>
 </div>
 <!-- End Trending -->
-
 <!-- List -->
 <div class="row justify-content-center video-items" data-slick='{"slidesToShow": 3, "slidesToScroll": 1}'>
     {{ include('cv/cv.html.twig') }}
 </div>
 <!-- End List -->
 {% endif %}
-
 {% if entreprises | length > 0 %}
 <!-- Trending Slider 2 -->
 <div class="row mb-4">
@@ -108,12 +97,10 @@
     </div>
 </div>
 <!-- End Trending 2 -->
-
 <!-- List -->
 <div class="row justify-content-center video-items" data-slick='{"slidesToShow": 3, "slidesToScroll": 1}'>
     {{ include('entreprise/entreprise.html.twig') }}
 </div>
 <!-- End List -->
 {% endif %}
-
 {% endblock %}

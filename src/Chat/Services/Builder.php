@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Messaging;
+namespace App\Chat\Services;
 
 use App\Entity\Messaging;
 
