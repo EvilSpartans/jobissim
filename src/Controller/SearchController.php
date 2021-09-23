@@ -36,13 +36,11 @@ class SearchController extends AbstractController
     }
 
     /**
-     * @Route("/autocomplete", name="autocomplete", methods={"GET"})
+     * @Route("/autocomplete/{search}", name="autocomplete", methods={"GET"})
      */
-    public function autocomplete(UserRepository $userRepository, PostRepository $postRepository, Request $request): JsonResponse
+    public function autocomplete(UserRepository $userRepository, PostRepository $postRepository, Request $request, string $search): JsonResponse
     {
-        $term = $request->request->get('search');
-        $users = $userRepository->autocomplete($term);
-
+        $users = $userRepository->autocomplete($search);
         $outputUsers = [];
         foreach ($users as $user) {
             $outputUsers[$user['id']] = [
@@ -52,8 +50,8 @@ class SearchController extends AbstractController
             ];
         }
 
+        $posts = $postRepository->autocomplete($search);
         $outputPost = [];
-        $posts = $postRepository->autocomplete($term);
         foreach ($posts as $post) {
             $outputPost[$post['id']] = [
                 'title' => $post['title'],

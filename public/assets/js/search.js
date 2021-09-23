@@ -1,26 +1,27 @@
 $(document).ready(function () {
+  var term = $("#tags").val();
   $("#tags").autocomplete({
-    source: function (request, response) {
+    appendTo: ".datafetch",
+    minLength: 3,
+    source: function (requete, response) {
       $.ajax({
         type: "GET",
-        url: "/autocomplete",
+        url: `/autocomplete/${term}`,
         dataType: "json",
-        data: {
-          searchText: request.search,
-        },
+        data: $("#tags").val(),
+
         success: function (data) {
+          console.log(data);
           response(
             $.map(data, function (item) {
               return {
-                label: item.name,
-                value: item.id,
+                label: item,
+                value: item,
               };
             })
           );
         },
       });
     },
-    appendTo: ".datafetch",
-    minLength: 4,
   });
 });
