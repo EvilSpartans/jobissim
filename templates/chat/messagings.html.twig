@@ -30,13 +30,7 @@
                             <div class="chat-container" id="chat-container">
                                 <ul class="chat-box chatContainerScroll" id="chatContainerScroll">
                                 </ul>
-{#    {{ include('messaging/messages.html.twig')}}
-                                <div class="form-group mt-3 mb-0">
-                                    {{ form_start(form) }}
-                                    {{ form_row(form.content, {attr: {class: "form-control", rows:"3"}}) }}
-                                    <button>Envoyer</button>
-                                    {{ form_end(form) }}
-                                </div>#}
+                                
                             </div>
                         </div>
                     </div>
@@ -55,6 +49,7 @@
             url: '{{ path('chat_list_by_user', {'id': app.user.id}) }}',
             type: 'GET',
              success: function (data) {
+                console.log(data)
                 let img = []
                 let authorPicture = []
                 let result = []
@@ -68,7 +63,6 @@
                               contributors.push(messaging['author'].firstname+' '+messaging['author'].lastname)
                          }
                      })
-
                     let childBlock = '<p class="name-time"><span class="name" id="contributor_name">'+contributors+' '+'</span><span class="time" id="contributor_time">'+messaging.createdAt+'</span></p>'
                     if (contributors.length === 1) {
                         $.map(messaging['contributors'], function (contributor) {
@@ -96,100 +90,19 @@
                     }
                 })
 
-               $('#users').html(img + result)
+               $('#users').html(img , result)
              },
-        }).done(function(data){
-          let html = []
-          // appel ajax qui recupére la conversation
+        }).done(function(){
           $('#users li').click(function() {
-              let messages = []
-              let messagingId = $(this).data('id')
               $.ajax({
-                 url: '{{ path('get_messages', {'id': 'messagingId'}) }}'.replace('messagingId', messagingId),
+                 url: '{{ path('get_messages', {'id': 'messagingId'}) }}'.replace('messagingId', $(this).data('id')),
                  type: 'GET',
                  success: function (data) {
-                    $(data).each(function(e, messaging) {
-                       console.log(messaging.content)
-                       messages.push(messaging.content)
-                    })
-                       $('.chat-container').html('<span>'+ messages +'</span>')
+                       $('.chat-container').html(data)
                  }
               })
-      });
+          });
     })
-   {#
-   <ul class="chat-box chatContainerScroll">
-    <div class="lala">
-        {% for message in messages %}
-        {% if message.author == app.user %}
-        <li class="chat-left">
-            <div class="chat-avatar">
-                {% if message.author.avatar != '' %}
-                <img src="{{ vich_uploader_asset(message.author, 'avatarFile')  }}" alt="{{ message.author.username }}">
-                {% else %}
-                <img src="{{ asset('assets/images/nopic.png')  }}" alt="{{ message.author.username }}">
-                {% endif %}
-                <div class="chat-name">{{ message.author.username }}</div>
-            </div>
-            <div class="chat-text">{{ message.content }}</div>
-            <div class="chat-hour">{{ message.createdAt|date('d/m/y') }} <span class="fa fa-check-circle"></span></div>
-        </li>
-        {% else %}
-        <li class="chat-right">
-            <div class="chat-hour">{{ message.createdAt|date('d/m/y') }} <span class="fa fa-check-circle"></span></div>
-            <div class="chat-text">{{ message.content }}</div>
-            <div class="chat-avatar">
-                {% if message.author.avatar != '' %}
-                <img src="{{ vich_uploader_asset(message.author, 'avatarFile')  }}" alt="{{ message.author.username }}">
-                {% else %}
-                <img src="{{ asset('assets/images/nopic.png')  }}" alt="{{ message.author.username }}">
-                {% endif %}
-                <div class="chat-name">{{ message.author.username }}</div>
-            </div>
-        </li>
-        {% endif %}
-        {% endfor %}
-    </div>
-</ul>
-
-                                 #}
-
-
-  {#    $(".newMessage").submit(function (e) {
-        e.preventDefault();
-        var url = "{{ path('messaging_show', {'id': messaging.id}) }}";
-        var formSerialize = $(this).serialize();
-        $('.newMessage').trigger("reset");
-
-        $.post(url, formSerialize, function (response) {
-            console.log(response);
-        }, 'JSON');
-    });
-    Pusher.logToConsole = true;
-    let pusher = new Pusher('ba75523bee28d7c644f2', {
-        cluster: 'eu',
-    });
-    let channel = pusher.subscribe('my-channel-' + JSON.parse('{{ messaging.id | json_encode | raw }}'));
-    channel.bind('my_event',
-        function (data) {
-            console.log(data);
-            $('.lala').append('<li class = "chat-left"><div class="chat-avatar"><img src="/uploads/avatars/' + data['image'] + '"><div class="chat-name">' + data['user'] + '</div></div><div class="chat-text">' + data['content'] + '</div><div class="chat-hour">' + data['date'] + '<span class="fa fa-check-circle"></span></div>');
-        });
-    channel.bind('pusher:subscription_succeeded', function (members) {
-        console.log('successfully subscribed!');
-    });
-    function ajaxCall(ajax_url, ajax_data) {
-        $.ajax({
-            type: "POST",
-            url: ajax_url,
-            dataType: "json",
-            data: ajax_data,
-            success: function (response) {
-                console.log(response);
-            },
-            error: function (msg) { }
-        });
-    }#}
 })
 </script>
 {% endblock %}

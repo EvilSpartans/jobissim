@@ -7,7 +7,6 @@ namespace App\Chat\Controller\Api;
 use App\Entity\Messaging;
 use App\Repository\MessageRepository;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
-use FOS\RestBundle\View\View;
 use FOS\RestBundle\Controller\Annotations as FOSRest;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use OpenApi\Annotations as OA;
@@ -17,7 +16,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 /**
  * @FOSRest\Route("/api-message/")
  */
-class MessagesController extends AbstractFOSRestController
+final class MessagesController extends AbstractFOSRestController
 {
     /**
      * @Security("is_granted('ROLE_USER')")
@@ -33,24 +32,22 @@ class MessagesController extends AbstractFOSRestController
      * @OA\Response(response="500", description="server error")
      *
      * @FOSRest\Get("get-messages-by-messaging/{id}", name="get_messages", methods={"GET"})
-     * @FOSRest\View(serializerGroups={"messages_list"}, statusCode=Response::HTTP_OK)
+     * @FOSRest\View(statusCode=Response::HTTP_OK)
      *
      * @param Messaging $messaging
      * @param MessageRepository $messageRepository
      *
-     * @return View
      *
-     * @throws \Exception
+     * @return string
      */
-    public function getMessages(Messaging $messaging, MessageRepository $messageRepository): View
+    public function __invoke(Messaging $messaging, MessageRepository $messageRepository): string
     {
         if (!$this->getUser()) {
             throw new \LogicException('Unauthorized user to make this action');
         }
-        try {
-            return $this->view($messageRepository->getMessages($messaging->getId()), Response::HTTP_OK);
-        } catch (\Exception $e) {
-            throw new \Exception($e);
-        }
+
+        return $this->renderView('chat/messages.html.twig', [
+            'messages' => $messageRepository->getMessages($messaging->getId())
+        ]);
     }
 }

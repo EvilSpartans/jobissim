@@ -18,7 +18,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 /**
  * @FOSRest\Route("/api-message/")
  */
-class MessagingsController extends AbstractFOSRestController
+final class MessagingsController extends AbstractFOSRestController
 {
     /**
      * @Security("is_granted('ROLE_USER')")
@@ -44,7 +44,7 @@ class MessagingsController extends AbstractFOSRestController
      *
      * @throws \Exception
      */
-    public function getMessagings(User $user, MessagingRepository $messagingRepository, Builder $builder): View
+    public function __invoke(User $user, MessagingRepository $messagingRepository, Builder $builder): View
     {
         if ($user !== $this->getUser()) {
             throw new \LogicException('Unauthorized user to make this action');

@@ -6,12 +6,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class ChatController extends AbstractController
+final class ChatController extends AbstractController
 {
     /**
      * @Route("/chat", name="chat", methods={"GET"})
      */
-    public function chat(): Response
+    public function __invoke(): Response
     {
         if (!$this->getUser()) {
             throw new \LogicException('You don\'t have access to this page');

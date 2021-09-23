@@ -65,7 +65,7 @@ class MessageRepository extends ServiceEntityRepository
             ->innerJoin('m.messaging', 'msg')
             ->andWhere('msg.id = :id')
             ->setParameter('id', $id)
-            ->orderBy('m.id', 'DESC')
+            ->orderBy('m.id', 'ASC')
             ->getQuery()
             ->getResult();
     }
