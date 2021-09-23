@@ -36,35 +36,30 @@ class SearchController extends AbstractController
     }
 
     /**
-     * @Route("/autocomplete", name="autocomplete", methods={"GET","POST"})
+     * @Route("/autocomplete", name="autocomplete", methods={"GET"})
      */
-    public function autocomplete(UserRepository $userRepository, PostRepository $postRepository, Request $request)
+    public function autocomplete(UserRepository $userRepository, PostRepository $postRepository, Request $request): JsonResponse
     {
         $term = $request->request->get('search');
         $users = $userRepository->autocomplete($term);
-        $posts = $postRepository->autocomplete($term);
 
-        $data = [];
+        $outputUsers = [];
         foreach ($users as $user) {
-            $data['id'] = $user->getId();
-            $data['firstname'] = $user->getFirstname();
-            $data['lastname'] = $user->getLastname();
-            $data['avatar'] = $user->getAvatar();
-        }
-
-        $data2 = [];
-        foreach ($posts as $post) {
-            $data2[] = [
-                $post->getId() => [
-                    'id' => $post->getId(),
-                    'title' => $post->getTitle(),
-                    'image' =>  $post->getImage()
-                ],
+            $outputUsers[$user['id']] = [
+                'firstname' => $user['firstname'],
+                'lastname' => $user['lastname'],
+                'avatar' => $user['avatar'],
             ];
         }
 
-        if ($request->isXmlHttpRequest()) {
-            return new JsonResponse([$data, $data2], Response::HTTP_OK);
+        $outputPost = [];
+        $posts = $postRepository->autocomplete($term);
+        foreach ($posts as $post) {
+            $outputPost[$post['id']] = [
+                'title' => $post['title'],
+                'image' =>  $post['image']
+            ];
         }
+        return new JsonResponse([$outputUsers, $outputPost], Response::HTTP_OK);
     }
 }

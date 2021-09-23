@@ -2613,6 +2613,10 @@ section.wp-block-cover-image h2 {
 /*--------------------------------------------------------------
 ## Posts and pages
 --------------------------------------------------------------*/
+
+.datafetch {
+    background: #fff;
+}
 .sticky .blog-item {
     color: #fff;
 }

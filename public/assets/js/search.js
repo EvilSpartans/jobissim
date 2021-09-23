@@ -1,44 +1,26 @@
-$("#searchForm").keyup(function () {
-  var term = $("#searchForm").val();
-  var DATA = { libelle: term };
-  $.ajax({
-    type: "GET",
-    url: "/autocomplete",
-    data: DATA,
-    success: function (data) {
-      $.each(data, function (k, el) {
-        $(".datafetch").html("<ul></ul>");
-        $("ul").append(
-          '<li><a href="/account_' +
-            data.id +
-            '"><img src="/uploads/avatars/' +
-            data.image +
-            '" class="avatar" /> @ ' +
-            data.firstname +
-            " " +
-            data.lastname +
-            "</a></li>"
-        );
+$(document).ready(function () {
+  $("#tags").autocomplete({
+    source: function (request, response) {
+      $.ajax({
+        type: "GET",
+        url: "/autocomplete",
+        dataType: "json",
+        data: {
+          searchText: request.search,
+        },
+        success: function (data) {
+          response(
+            $.map(data, function (item) {
+              return {
+                label: item.name,
+                value: item.id,
+              };
+            })
+          );
+        },
       });
     },
-    error: function () {
-      console.log("error " + DATA);
-    },
+    appendTo: ".datafetch",
+    minLength: 4,
   });
 });
-
-// $("#searchForm").autocomplete({
-//   source: function (request, response) {
-//     $.ajax({
-//       url: "/autocomplete",
-//       data: {
-//         query: request.term,
-//       },
-//       dataType: "json",
-//       method: "GET",
-//     }).done(function (data) {
-//       response(data);
-//     });
-//   },
-//   minLength: 3,
-// });
