@@ -111,15 +111,15 @@ class PostRepository extends ServiceEntityRepository
 
     /**
      * Autocomplete
-     *
-     * @return void
      */
-    public function autocomplete()
+    public function autocomplete($term): array
     {
         return $this->createQueryBuilder('u')
-            ->select('u.title')
-            ->addSelect('u.hashtag')
+            ->select('u.id, u.title, u.image, u.hashtag')
+            ->where('u.title LIKE :term')
+            ->orWhere('u.hashtag LIKE :term')
+            ->setParameter('term', '%' . $term . '%')
             ->getQuery()
-            ->execute();
+            ->getResult();
     }
 }

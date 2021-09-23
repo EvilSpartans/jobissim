@@ -38,13 +38,33 @@ class SearchController extends AbstractController
     /**
      * @Route("/autocomplete", name="autocomplete", methods={"GET","POST"})
      */
-    public function autocomplete(UserRepository $userRepository, PostRepository $postRepository, Request $request): Response
+    public function autocomplete(UserRepository $userRepository, PostRepository $postRepository, Request $request)
     {
-        $users = $userRepository->autocomplete();
-        $posts = $postRepository->autocomplete();
+        $term = $request->request->get('search');
+        $users = $userRepository->autocomplete($term);
+        $posts = $postRepository->autocomplete($term);
+
+        $data = [];
+        foreach ($users as $user) {
+            $data['id'] = $user->getId();
+            $data['firstname'] = $user->getFirstname();
+            $data['lastname'] = $user->getLastname();
+            $data['avatar'] = $user->getAvatar();
+        }
+
+        $data2 = [];
+        foreach ($posts as $post) {
+            $data2[] = [
+                $post->getId() => [
+                    'id' => $post->getId(),
+                    'title' => $post->getTitle(),
+                    'image' =>  $post->getImage()
+                ],
+            ];
+        }
 
         if ($request->isXmlHttpRequest()) {
-            return new JsonResponse(Response::HTTP_OK);
+            return new JsonResponse([$data, $data2], Response::HTTP_OK);
         }
     }
 }

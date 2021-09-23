@@ -62,14 +62,15 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
     /**
      * Autocomplete
-     *
-     * @return void
      */
-    public function autocomplete()
+    public function autocomplete($term): array
     {
         return $this->createQueryBuilder('u')
-            ->select("CONCAT( CONCAT(u.firstname, ' '),  u.lastname)")
+            ->select('u.id, u.firstname, u.lastname, u.avatar')
+            ->where('u.firstname LIKE :term')
+            ->orWhere('u.lastname LIKE :term')
+            ->setParameter('term', '%' . $term . '%')
             ->getQuery()
-            ->execute();
+            ->getResult();
     }
 }
