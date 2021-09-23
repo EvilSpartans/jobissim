@@ -1,0 +1,17 @@
+fos_rest:
+  body_listener:
+    enabled: true
+  format_listener:
+    rules:
+      - { path: '^/api', priorities: ['json'], fallback_format: json, prefer_extension: true }
+      - { path: '^/', priorities: [ 'html', '*/*'], fallback_format: ~, prefer_extension: true }
+
+  view:
+    mime_types:
+      json: ['application/json; charset=UTF-8', 'application/json']
+    formats:
+      json: true
+      html: true
+    serialize_null: true
+    view_response_listener:  true
+  param_fetcher_listener: true

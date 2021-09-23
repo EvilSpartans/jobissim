@@ -6,6 +6,7 @@ use App\Repository\MessagingRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Entity(repositoryClass=MessagingRepository::class)
@@ -16,27 +17,32 @@ class Messaging
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Serializer\Groups(groups="chat_list")
      */
     private $id;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="messagings")
      * @ORM\JoinColumn(nullable=false)
+     * @Serializer\Groups(groups="chat_list")
      */
     private $author;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Serializer\Groups(groups="chat_list")
      */
     private $createdAt;
 
     /**
      * @ORM\OneToMany(targetEntity=Message::class, mappedBy="messaging", orphanRemoval=true)
+     * @Serializer\Groups(groups="chat_list")
      */
     private $messages;
 
     /**
      * @ORM\ManyToMany(targetEntity=User::class, inversedBy="messagingParticipants")
+     * @Serializer\Groups(groups="chat_list", "messages_list")
      */
     private $participants;
 

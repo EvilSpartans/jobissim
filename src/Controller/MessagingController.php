@@ -102,10 +102,9 @@ class MessagingController extends AbstractController
         $conversation = new Messaging();
         $form = $this->createForm(MessagingType::class, $conversation);
         $form->handleRequest($request);
-        $user = $this->getUser();
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $conversation->setAuthor($user);
+            $conversation->setAuthor($this->getUser());
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($conversation);
             $entityManager->flush();
@@ -138,6 +137,40 @@ class MessagingController extends AbstractController
             $entityManager->flush();
 
             return $this->redirectToRoute('messaging_show', ['id' => $conversation->getId()], Response::HTTP_SEE_OTHER);
+        }
+    }
+
+    /**
+     * @Route("/pusher_auth{id}", name="pusher_auth", methods={"GET","POST"})
+     *
+     * @throws \Pusher\PusherException
+     */
+    public function pusher()
+    {
+        $options = array(
+            'cluster' => 'eu',
+            'useTLS' => true
+        );
+        $pusher = new Pusher(
+            'ba75523bee28d7c644f2',
+            '9597b6daf0fb4e20fda2',
+            '1266737',
+            $options
+        );
+        $user = $this->getUser();
+
+        function user_is_authenticated($user)
+        {
+            if ($user) {
+                return true;
+            }
+        }
+
+        if (user_is_authenticated($user)) {
+            echo $pusher->socketAuth($_POST['private-chat'], $_POST['1266737']);
+        } else {
+            header('', true, 403);
+            echo "Forbidden";
         }
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Messaging;
+use App\Entity\User;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
@@ -19,14 +20,13 @@ class MessagingRepository extends ServiceEntityRepository
         parent::__construct($registry, Messaging::class);
     }
 
-    public function findByAuthorOrParticipants($id)
+    public function findByAuthorOrParticipants(?User $id)
     {
-        return $this->createQueryBuilder('p')
-            ->leftJoin('p.participants', 'Participants')
-            ->leftJoin('p.messages', 'Messages')
-            ->orderBy('Messages.id', 'DESC')
-            ->where('p.author = :id')
-            ->orWhere('Participants.id = :id')
+        return $this->createQueryBuilder('m')
+            ->leftJoin('m.participants', 'p')
+            ->where('m.author = :id')
+            ->orWhere('p.id = :id')
+            ->orderBy('m.createdAt', 'DESC')
             ->setParameter('id', $id)
             ->getQuery()
             ->getResult();

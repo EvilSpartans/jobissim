@@ -1,0 +1,195 @@
+{% extends 'base.html.twig' %}
+{% block title %}Messagerie{% endblock %}
+{% block body %}
+    <link rel="stylesheet" href="{{ asset('assets/css/chat.css') }}">
+    <div class="content-wrapper">
+        <div class="row gutters">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                <div class="blog-item m-0">
+                    <div class="row no-gutters">
+                        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-3 col-3">
+                            <div class="users-container">
+                                <div class="chat-search-box">
+                                    <div class="input-group">
+                                        <input class="form-control js-participants" placeholder="Rechercher" id="js-participants">
+                                        <div class="input-group-btn">
+                                            <button type="button" class="btn btn-info">
+                                                <i class="fa fa-search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                {# a remplacer par l'input sur cette page #}
+                                <a href="{{ path('messaging_new') }}" class="text-center">Nouvelle conversation</a>
+                                <ul id="users"></ul>
+                            </div>
+                        </div>
+                        <div class="col-xl-8 col-lg-8 col-md-8 col-sm-9 col-9">
+                            <div id="selected-user">
+                            </div>
+                            <div class="chat-container" id="chat-container">
+                                <ul class="chat-box chatContainerScroll" id="chatContainerScroll">
+                                </ul>
+{#    {{ include('messaging/messages.html.twig')}}
+                                <div class="form-group mt-3 mb-0">
+                                    {{ form_start(form) }}
+                                    {{ form_row(form.content, {attr: {class: "form-control", rows:"3"}}) }}
+                                    <button>Envoyer</button>
+                                    {{ form_end(form) }}
+                                </div>#}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascript %}
+{{ parent() }}
+<script src="https://js.pusher.com/7.0/pusher.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('.js-participants').select2()
+        $.ajax({
+            url: '{{ path('chat_list_by_user', {'id': app.user.id}) }}',
+            type: 'GET',
+             success: function (data) {
+                let img = []
+                let authorPicture = []
+                let result = []
+                let imgAuthor  = ''
+                $(data['messaging']).each(function(e, messaging) {
+                     let contributors = []
+                     $.map(messaging['contributors'], function (contributor) {
+                         if (contributor.email !== '{{ app.user.email }}') {
+                               contributors.push(contributor.firstname+' '+contributor.lastname)
+                         } else if (messaging['author'].email) {
+                              contributors.push(messaging['author'].firstname+' '+messaging['author'].lastname)
+                         }
+                     })
+
+                    let childBlock = '<p class="name-time"><span class="name" id="contributor_name">'+contributors+' '+'</span><span class="time" id="contributor_time">'+messaging.createdAt+'</span></p>'
+                    if (contributors.length === 1) {
+                        $.map(messaging['contributors'], function (contributor) {
+                             if (contributor.avatar) {
+                                 let userBlock = '<li class="user" id="messaging_id" data-id="msg_id"><img src="contributor_avatar" alt="contributor_avatar" style="display: block;" /><span class="status busy"></span>'+childBlock+'</li>'
+                                 img.push(userBlock.replace('contributor_avatar', '/uploads/avatars/' + contributor.avatar).replace('messaging_id', 'messaging_'+messaging.id).replace('msg_id', messaging.id))
+                             } else {
+                                 let imgNotFound = '<li class="user" id="messaging_id" data-id="msg_id"><img src="{{ asset('assets/images/nopic.png')  }}" alt="default picture" style="display: block;" /><span class="status busy"></span>'+childBlock+'</li>'
+                                 img.push(imgNotFound.replace('messaging_id', 'messaging_'+messaging.id).replace('msg_id', messaging.id))
+                             }
+                        })
+                    } else {
+                        childBlock = 'Groupe : ' +childBlock
+                         $.map(messaging['author'], function (author) {
+                             if (author.avatar) {
+                                 let imgAuthor  = '<img src="contributor_avatar" alt="contributor_avatar" style="display: block;" />'
+                                  authorPicture = imgAuthor.replace('contributor_avatar', '/uploads/avatars/' + author.avatar).replace('messaging_id', 'messaging_'+messaging.id).replace('msg_id', messaging.id)
+                             } else {
+                                  imgAuthor  = '<img src="{{ asset('assets/images/nopic.png')  }}" alt="default picture" style="display: block;" />'
+                                  authorPicture = imgAuthor.replace('messaging_id', 'messaging_'+messaging.id)
+                             }
+                        })
+                        let li = '<li class="user" id="messaging_id" data-id="msg_id">'+authorPicture+'<span class="status busy"></span>'+childBlock+'</li>'
+                        result.push(li.replace('messaging_id', 'messaging_'+messaging.id).replace('msg_id', messaging.id))
+                    }
+                })
+
+               $('#users').html(img + result)
+             },
+        }).done(function(data){
+          let html = []
+          // appel ajax qui recupére la conversation
+          $('#users li').click(function() {
+              let messages = []
+              let messagingId = $(this).data('id')
+              $.ajax({
+                 url: '{{ path('get_messages', {'id': 'messagingId'}) }}'.replace('messagingId', messagingId),
+                 type: 'GET',
+                 success: function (data) {
+                    $(data).each(function(e, messaging) {
+                       console.log(messaging.content)
+                       messages.push(messaging.content)
+                    })
+                       $('.chat-container').html('<span>'+ messages +'</span>')
+                 }
+              })
+      });
+    })
+   {#
+   <ul class="chat-box chatContainerScroll">
+    <div class="lala">
+        {% for message in messages %}
+        {% if message.author == app.user %}
+        <li class="chat-left">
+            <div class="chat-avatar">
+                {% if message.author.avatar != '' %}
+                <img src="{{ vich_uploader_asset(message.author, 'avatarFile')  }}" alt="{{ message.author.username }}">
+                {% else %}
+                <img src="{{ asset('assets/images/nopic.png')  }}" alt="{{ message.author.username }}">
+                {% endif %}
+                <div class="chat-name">{{ message.author.username }}</div>
+            </div>
+            <div class="chat-text">{{ message.content }}</div>
+            <div class="chat-hour">{{ message.createdAt|date('d/m/y') }} <span class="fa fa-check-circle"></span></div>
+        </li>
+        {% else %}
+        <li class="chat-right">
+            <div class="chat-hour">{{ message.createdAt|date('d/m/y') }} <span class="fa fa-check-circle"></span></div>
+            <div class="chat-text">{{ message.content }}</div>
+            <div class="chat-avatar">
+                {% if message.author.avatar != '' %}
+                <img src="{{ vich_uploader_asset(message.author, 'avatarFile')  }}" alt="{{ message.author.username }}">
+                {% else %}
+                <img src="{{ asset('assets/images/nopic.png')  }}" alt="{{ message.author.username }}">
+                {% endif %}
+                <div class="chat-name">{{ message.author.username }}</div>
+            </div>
+        </li>
+        {% endif %}
+        {% endfor %}
+    </div>
+</ul>
+
+                                 #}
+
+
+  {#    $(".newMessage").submit(function (e) {
+        e.preventDefault();
+        var url = "{{ path('messaging_show', {'id': messaging.id}) }}";
+        var formSerialize = $(this).serialize();
+        $('.newMessage').trigger("reset");
+
+        $.post(url, formSerialize, function (response) {
+            console.log(response);
+        }, 'JSON');
+    });
+    Pusher.logToConsole = true;
+    let pusher = new Pusher('ba75523bee28d7c644f2', {
+        cluster: 'eu',
+    });
+    let channel = pusher.subscribe('my-channel-' + JSON.parse('{{ messaging.id | json_encode | raw }}'));
+    channel.bind('my_event',
+        function (data) {
+            console.log(data);
+            $('.lala').append('<li class = "chat-left"><div class="chat-avatar"><img src="/uploads/avatars/' + data['image'] + '"><div class="chat-name">' + data['user'] + '</div></div><div class="chat-text">' + data['content'] + '</div><div class="chat-hour">' + data['date'] + '<span class="fa fa-check-circle"></span></div>');
+        });
+    channel.bind('pusher:subscription_succeeded', function (members) {
+        console.log('successfully subscribed!');
+    });
+    function ajaxCall(ajax_url, ajax_data) {
+        $.ajax({
+            type: "POST",
+            url: ajax_url,
+            dataType: "json",
+            data: ajax_data,
+            success: function (response) {
+                console.log(response);
+            },
+            error: function (msg) { }
+        });
+    }#}
+})
+</script>
+{% endblock %}

@@ -22,16 +22,17 @@ class MessageRepository extends ServiceEntityRepository
     /**
      * Find messages in conversations
      *
-     * @param [type] $id
-     * @return void
+     * @param $id
+     *
+     * @return int|mixed|string
      */
     public function findByConversation($id)
     {
         return $this->createQueryBuilder('p')
-            ->orderBy('p.id', 'ASC')
             ->join('p.messaging', 'Conversation')
             ->andWhere('Conversation.id = :id')
             ->setParameter('id', $id)
+            ->orderBy('p.id', 'DESC')
             ->getQuery()
             ->getResult();
     }
@@ -39,8 +40,12 @@ class MessageRepository extends ServiceEntityRepository
     /**
      * Count unread messages in conversations
      *
-     * @param [type] $user
-     * @return void
+     * @param $user
+     *
+     * @return int|mixed|string
+     *
+     * @throws \Doctrine\ORM\NoResultException
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function countMessages($user)
     {
@@ -52,5 +57,16 @@ class MessageRepository extends ServiceEntityRepository
             ->setParameter('user', $user)
             ->getQuery()
             ->getSingleScalarResult();
+    }
+
+    public function getMessages(int $id)
+    {
+        return $this->createQueryBuilder('m')
+            ->innerJoin('m.messaging', 'msg')
+            ->andWhere('msg.id = :id')
+            ->setParameter('id', $id)
+            ->orderBy('m.id', 'DESC')
+            ->getQuery()
+            ->getResult();
     }
 }
