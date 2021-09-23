@@ -56,11 +56,8 @@
                     </div>
                 </div>
                 <div class="col-xl-7 col-lg-7 my-auto d-none d-xl-block">
-                    <form id="searchForm" class="ajax-search-form" action="{{ path('search') }}" method="POST">
-                        <input type="search" name="search" class="keyword" placeholder="Rechercher">
-                        <button type="submit"><i class="fa fa-search"></i></button>
-                        <div class="datafetch"></div>
-                    </form>
+                    <input id="search" type="text" name="search" />
+                    <div class="datafetch"></div>
                 </div>
                 <div class="col-xl-1 col-lg-1 my-auto text-right">
                     <a class="upload-video" href="{{ path('post_new') }}"><i class="far fa-video-plus"></i></a>
@@ -360,19 +357,25 @@
     <!-- End BackTop -->
 
     <!-- JS -->
-    <script
-            src="https://code.jquery.com/jquery-3.6.0.js"
-            integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
-            crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="{{ asset('assets/js/plugins.js')}}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="{{ asset('assets/js/main.js')}}"></script>
     <script src="{{ asset('assets/js/like.js') }}"></script>
-    <script src="{{ asset('assets/js/search.js') }}"></script>
+   {# <script src="{{ asset('assets/js/search.js') }}"></script> #}
     <!-- End JS -->
+
+    <script>
+        $(document).ready(function () {
+            $('#search').autocomplete({
+                source: availableTags,
+                minLength: 4,
+            })
+        })
+
+    </script>
 
     {% block javascript %}
     {% endblock %}
